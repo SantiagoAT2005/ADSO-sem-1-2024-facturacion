@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+
+
+{% block contenido %}
+<h1 style="margin: 0 20px 20px 40px; color: #3b3934; display: flex; align-items: center;">{{ titulo }}</h1>  
+
+<div class="m-4 p-4 border rounded" style="background-color: #eee4c4;">
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Nombre del cliente</th>
+        <th scope="col">Fecha de nacimiento</th>
+        <th scope="col">Tipo de identificación</th>
+        <th scope="col">N° Identificación</th>
+        <th scope="col">Correo electronico</th>
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for cliente in clientes %}
+      <tr>
+        <th scope="row">{{cliente.nombre_cliente}}</th>
+        <td>{{cliente.fecha_cliente}}</td>
+        <td>{{cliente.tipo_identificacion}}</td>
+        <td>{{cliente.identificacion_cliente}}</td>
+        <td>{{cliente.email_cliente}}</td>
+        <td style="white-space: nowrap;"> 
+              <a href="{{ url_for('editar_cliente', id=cliente.id) }}" class="btn btn-success btn-sm me-1" 
+                style="font-size: 0.7rem; padding: 2px 6px;" title="Editar cliente {{ cliente.descripcion }}">Editar
+              </a>
+              <form action="{{ url_for('eliminar_cliente', id=cliente.id) }}" 
+                  method="POST" 
+                  style="display:inline;">
+                <button type="submit" 
+                    class="btn btn-danger btn-sm" 
+                    style="font-size: 0.7rem; padding: 2px 6px;" 
+                    title="Borrar cliente {{ cliente.descripcion }}"
+                    onclick="return confirm('¿Seguro que deseas eliminar este cliente?');">Borrar
+                </button>
+              </form>
+            </td>
+          </tr>
+      {% endfor %}
+
+      
+    </tbody>
+  </table>
+</div>
+{% endblock contenido %}
+   
+      
+
