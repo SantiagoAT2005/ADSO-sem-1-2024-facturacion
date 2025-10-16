@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% block contenido %}
+<h2>Listado de Productos</h2>
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Código</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Unidad de Medida</th>
+            <th>Categoría</th>
+            <th>Forma de Pago</th>
+            <th>N° Identificación</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody id="listaProductos"></tbody>
+</table>
+
+<script>
+function cargarProductos() {
+    let productos = JSON.parse(localStorage.getItem("productos")) || [];
+    let categorias = JSON.parse(localStorage.getItem("categorias")) || [];
+    let lista = document.getElementById("listaProductos");
+    lista.innerHTML = "";
+
+    productos.forEach(prod => {
+        let categoria = categorias.find(cat => cat.id === prod.categoriaId);
+        let nombreCategoria = categoria ? categoria.nombre : "Sin categoría";
+
+        lista.innerHTML += `
+            <tr>
+                <td>${prod.codigo}</td>
+                <td>${prod.descripcion}</td>
+                <td>${prod.precio}</td>
+                <td>${prod.unidad}</td>
+                <td>${nombreCategoria}</td>
+                <td>${prod.formaPago}</td>
+                <td>${prod.identificacion}</td>
+                <td>
+                    <button class="btn btn-info btn-sm">Ver</button>
+                    <button class="btn btn-warning btn-sm">Editar</button>
+                    <button class="btn btn-danger btn-sm" onclick="eliminarProducto('${prod.codigo}')">Borrar</button>
+                </td>
+            </tr>`;
+    });
+}
+
+function eliminarProducto(codigo) {
+    let productos = JSON.parse(localStorage.getItem("productos")) || [];
+    let nuevos = productos.filter(p => p.codigo !== codigo);
+    localStorage.setItem("productos", JSON.stringify(nuevos));
+    cargarProductos();
+}
+
+document.addEventListener("DOMContentLoaded", cargarProductos);
+</script>
+{% endblock %}

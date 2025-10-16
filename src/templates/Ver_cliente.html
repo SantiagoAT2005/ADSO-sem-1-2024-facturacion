@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+  <title>Ver Cliente</title>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">FACT-3000</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="lista_clientes.html">Volver a la Lista</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <h2>Detalles del Cliente</h2>
+    <div id="detalleCliente" class="border rounded p-4 bg-light"></div>
+  </div>
+
+  <script>
+    function verCliente() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+      let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
+      let cliente = clientes.find(c => c.id == id);
+
+      if (!cliente) {
+        document.getElementById("detalleCliente").innerHTML = "<p class='text-danger'>Cliente no encontrado.</p>";
+        return;
+      }
+
+      document.getElementById("detalleCliente").innerHTML = `
+        <p><strong>Nombre:</strong> ${cliente.nombre}</p>
+        <p><strong>Fecha de Nacimiento:</strong> ${cliente.fechaNacimiento}</p>
+        <p><strong>Tipo de Identificación:</strong> ${cliente.tipoIdentificacion}</p>
+        <p><strong>N° Identificación:</strong> ${cliente.identificacion}</p>
+        <p><strong>Correo Electrónico:</strong> ${cliente.correo}</p>
+        <a href="formulario_cliente.html?id=${cliente.id}" class="btn btn-warning">Editar</a>
+        <a href="lista_clientes.html" class="btn btn-secondary">Volver</a>
+      `;
+    }
+
+    document.addEventListener("DOMContentLoaded", verCliente);
+  </script>
+</body>
+</html>
+

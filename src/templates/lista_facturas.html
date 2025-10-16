@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Facturas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="index.html">FACT-3000</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="formulario_factura.html">Agregar Factura</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="lista_facturas.html">Listado de Facturas</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO -->
+    <div class="container mt-4">
+        <h2>Listado de Facturas</h2>
+        <a href="formulario_factura.html" class="btn btn-primary mb-3">Agregar Factura</a>
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Productos</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="listaFacturas"></tbody>
+        </table>
+    </div>
+
+    <!-- SCRIPT -->
+    <script>
+        function cargarFacturas() {
+            let facturas = JSON.parse(localStorage.getItem("facturas")) || [];
+            let lista = document.getElementById("listaFacturas");
+            lista.innerHTML = "";
+
+            if (facturas.length === 0) {
+                lista.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center">No hay facturas registradas.</td>
+                    </tr>`;
+                return;
+            }
+
+facturas.forEach((f, i) => {
+    let productosTexto = f.productos ? f.productos.map(p => `${p.nombre} x${p.cantidad}`).join(", ") : "Sin productos";
+
+    let fila = `
+        <tr>
+            <td>${i + 1}</td>
+            <td>${f.clienteNombre}</td>
+            <td>${f.fecha}</td>
+            <td>$${parseFloat(f.total).toFixed(2)}</td>
+            <td>${productosTexto}</td>
+            <td>
+                <button class="btn btn-info btn-sm" onclick="verFactura(${f.id})">Ver</button>
+                <button class="btn btn-warning btn-sm" onclick="editarFactura(${f.id})">Editar</button>
+                <button class="btn btn-danger btn-sm" onclick="eliminarFactura(${f.id})">Eliminar</button>
+            </td>
+        </tr>`;
+    lista.innerHTML += fila;
+});
+
+        }
+
+        function verFactura(id) {
+            window.location.href = `Ver_facturas.html?id=${id}`;
+        }
+
+        function editarFactura(id) {
+            window.location.href = `formulario_factura.html?id=${id}`;
+        }
+
+        function eliminarFactura(id) {
+            let facturas = JSON.parse(localStorage.getItem("facturas")) || [];
+            let nuevas = facturas.filter(f => f.id !== id);
+            localStorage.setItem("facturas", JSON.stringify(nuevas));
+            cargarFacturas();
+        }
+
+        document.addEventListener("DOMContentLoaded", cargarFacturas);
+    </script>
+</body>
+</html>
+
