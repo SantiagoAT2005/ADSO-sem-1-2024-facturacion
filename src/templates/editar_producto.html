@@ -1,0 +1,46 @@
+{% extends 'layout.html' %}
+
+{% block contenido %}
+  <h1 class="text-">Editar producto</h1>
+  <form method="POST" >
+    
+
+    <div class="form-group">
+      <label for="descripcion">Descripción:</label>
+      <input type="text" class="form-control" id="descripcion" name="descripcion" value="{{ producto.descripcion }}"
+        required>
+    </div>
+
+    <div class="form-group">
+      <label for="valor_unitario">Valor Unitario:</label>
+      <input type="number" step="0.01" class="form-control" id="valor_unitario" name="valor_unitario"
+        value="{{ producto.valor_unitario }}" required>
+    </div>
+
+    <div class="form-group">
+      <label for="cantida_stock">Cantidad en Inventario:</label>
+      <input type="number" class="form-control" id="cantida_stock" name="cantida_stock"
+        value="{{ producto.cantida_stock }}" required>
+    </div>
+
+    <div class="form-group">
+      <label for="unidad_medida">Unidad de Medida:</label>
+      <input type="text" class="form-control" id="unidad_medida" name="unidad_medida"
+        value="{{ producto.unidad_medida }}" required>
+    </div>
+
+    <div class="form-group">
+      <label for="categoria">Categoría:</label>
+      <input type="number" class="form-control" id="categoria" name="categoria" value="{{ producto.categoria }}"
+        required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    <a href="{{ url_for('lista_productos') }}" class="btn btn-secondary">Cancelar</a>
+  </form>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
+{% endblock contenido %}

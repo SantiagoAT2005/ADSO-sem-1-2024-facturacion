@@ -1,0 +1,125 @@
+{% extends 'layout.html' %}
+
+{% block contenido %}
+<h2 class="mb-4">Registrar Cliente</h2>
+
+<form id="formCliente" action="crear_cliente" method="post" novalidate>
+
+  <div class="form-group col-md-6 mb-3">
+    <label for="numero_identificacion">Número de identificación</label>
+    <input type="text" class="form-control" id="numero_identificacion" name="numero_identificacion"
+      placeholder="Número de identificación">
+    <small class="text-danger" id="errorIdentificacion"></small>
+  </div>
+
+  <div class="form-group col-md-6 mb-3">
+    <label for="nombre">Nombre completo</label>
+    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Juan Ruiz">
+    <small class="text-danger" id="errorNombre"></small>
+  </div>
+  <div class="form-group col-md-6 mb-3">
+    <label for="email">Email</label>
+    <input type="text" class="form-control" id="email" name="email" placeholder="jruiz@gmail.com">
+    <small class="text-danger" id="errorEmail"></small>
+  </div>
+
+
+  <div class="form-group col-md-6 mb-3">
+    <label for="telefono">Teléfono</label>
+    <input type="text" class="form-control" id="telefono" name="telefono" placeholder="3118709089">
+    <small class="text-danger" id="errorTelefono"></small>
+  </div>
+  <div class="form-group col-md-6 mb-3">
+    <label for="direccion">Dirección</label>
+    <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Calle 6 Carrera 8 -10">
+    <small class="text-danger" id="errorDireccion"></small>
+  </div>
+
+
+  <button type="submit" class="btn btn-primary mt-3">Guardar</button>
+</form>
+
+<!-- ✅ Script de validación -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("formCliente");
+
+    form.addEventListener("submit", function (e) {
+      let valido = true;
+
+      // Campos
+      const identificacion = document.getElementById("numero_identificacion");
+      const nombre = document.getElementById("nombre");
+      const direccion = document.getElementById("direccion");
+      const telefono = document.getElementById("telefono");
+      const email = document.getElementById("email");
+
+      // Limpia mensajes anteriores
+      document.querySelectorAll("small.text-danger").forEach(el => el.textContent = "");
+      [identificacion, nombre, direccion, telefono, email].forEach(el => el.classList.remove("is-invalid"));
+
+      // Validación: Número de identificación
+      if (identificacion.value.trim() === "") {
+        document.getElementById("errorIdentificacion").textContent = "El número de identificación es obligatorio.";
+        identificacion.classList.add("is-invalid");
+        valido = false;
+      } else if (!/^\d+$/.test(identificacion.value.trim())) {
+        document.getElementById("errorIdentificacion").textContent = "Debe contener solo números.";
+        identificacion.classList.add("is-invalid");
+        valido = false;
+      }
+
+      // Validación: Nombre
+      if (nombre.value.trim() === "") {
+        document.getElementById("errorNombre").textContent = "El nombre es obligatorio.";
+        nombre.classList.add("is-invalid");
+        valido = false;
+      } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(nombre.value.trim())) {
+        document.getElementById("errorNombre").textContent = "El nombre solo puede contener letras.";
+        nombre.classList.add("is-invalid");
+        valido = false;
+      }
+
+      // Validación: Dirección
+      if (direccion.value.trim() === "") {
+        document.getElementById("errorDireccion").textContent = "La dirección es obligatoria.";
+        direccion.classList.add("is-invalid");
+        valido = false;
+      }
+
+      // Validación: Teléfono
+      if (telefono.value.trim() === "") {
+        document.getElementById("errorTelefono").textContent = "El teléfono es obligatorio.";
+        telefono.classList.add("is-invalid");
+        valido = false;
+      } else if (!/^\d+$/.test(telefono.value.trim())) {
+        document.getElementById("errorTelefono").textContent = "El teléfono solo debe contener números.";
+        telefono.classList.add("is-invalid");
+        valido = false;
+      } else if (telefono.value.trim().length < 7) {
+        document.getElementById("errorTelefono").textContent = "El teléfono debe tener al menos 7 dígitos.";
+        telefono.classList.add("is-invalid");
+        valido = false;
+      }
+
+      // Validación: Email
+      const patronEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (email.value.trim() === "") {
+        document.getElementById("errorEmail").textContent = "El email es obligatorio.";
+        email.classList.add("is-invalid");
+        valido = false;
+      } else if (!patronEmail.test(email.value.trim())) {
+        document.getElementById("errorEmail").textContent = "Ingrese un email válido.";
+        email.classList.add("is-invalid");
+        valido = false;
+      }
+
+      // Bloquea el envío si hay errores
+      if (!valido) {
+        e.preventDefault();
+      }
+    });
+  });
+</script>
+
+{% endblock contenido %}

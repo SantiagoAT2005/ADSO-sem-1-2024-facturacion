@@ -1,0 +1,108 @@
+{% extends 'layout.html' %}
+
+{% block contenido %}
+<h2 class="mb-4">Crear Usuario</h2>
+
+<form id="formUsuario" action="crear_usuario" method="post" novalidate>
+
+  <div class="form-group col-md-6 mb-3">
+    <label for="nombre">Nombre</label>
+    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="nombre">
+    <small class="text-danger" id="errorNombre"></small>
+  </div>
+
+  <div class="form-group col-md-6 mb-3">
+    <label for="email">Email</label>
+    <input type="text" class="form-control" id="email" name="email" placeholder="jruiz@gmail.com">
+    <small class="text-danger" id="errorEmail"></small>
+  </div>
+
+  <div class="form-group col-md-6 mb-3">
+    <label for="contraseña">Contraseña</label>
+    <input type="password" class="form-control" id="contraseña" name="contraseña" placeholder="********">
+    <small class="text-danger" id="errorContraseña"></small>
+  </div>
+
+  <div class="form-group col-md-6 mb-3">
+    <label for="rol">Rol</label>
+    <select class="form-control" id="rol" name="rol">
+      <option value="">Seleccione un rol</option>
+      <option value="admin">Admin</option>
+      <option value="usuario">Usuario</option>
+    </select>
+    <small class="text-danger" id="errorRol"></small>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Guardar</button>
+</form>
+
+<!-- ✅ Script que funciona correctamente -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("formUsuario");
+
+  form.addEventListener("submit", function (e) {
+    let valido = true;
+
+    // Campos
+    const nombre = document.getElementById("nombre");
+    const email = document.getElementById("email");
+    const contraseña = document.getElementById("contraseña");
+    const rol = document.getElementById("rol");
+
+    // Limpia errores anteriores
+    document.getElementById("errorNombre").textContent = "";
+    document.getElementById("errorEmail").textContent = "";
+    document.getElementById("errorContraseña").textContent = "";
+    document.getElementById("errorRol").textContent = "";
+
+    // Reset clases de error visual
+    [nombre, email, contraseña, rol].forEach(input => input.classList.remove("is-invalid"));
+
+    // Validar nombre
+    if (nombre.value.trim() === "") {
+      document.getElementById("errorNombre").textContent = "El nombre es obligatorio.";
+      nombre.classList.add("is-invalid");
+      valido = false;
+    }
+
+    // Validar email
+    const patronEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email.value.trim() === "") {
+      document.getElementById("errorEmail").textContent = "El email es obligatorio.";
+      email.classList.add("is-invalid");
+      valido = false;
+    } else if (!patronEmail.test(email.value.trim())) {
+      document.getElementById("errorEmail").textContent = "Ingrese un email válido.";
+      email.classList.add("is-invalid");
+      valido = false;
+    }
+
+    // Validar contraseña
+    if (contraseña.value.trim() === "") {
+      document.getElementById("errorContraseña").textContent = "La contraseña es obligatoria.";
+      contraseña.classList.add("is-invalid");
+      valido = false;
+    } else if (contraseña.value.length < 6) {
+      document.getElementById("errorContraseña").textContent = "Debe tener al menos 6 caracteres.";
+      contraseña.classList.add("is-invalid");
+      valido = false;
+    }
+
+    // Validar rol
+    if (rol.value === "") {
+      document.getElementById("errorRol").textContent = "Debe seleccionar un rol.";
+      rol.classList.add("is-invalid");
+      valido = false;
+    }
+
+    // Si hay errores, no enviar
+    if (!valido) {
+      e.preventDefault();
+    }
+  });
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock contenido %}

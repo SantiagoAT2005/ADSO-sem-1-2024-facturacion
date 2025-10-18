@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+
+{% block contenido %}
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">id</th>
+      <th scope="col">numero_identificacion</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Email</th>
+      <th scope="col">Teléfono</th>
+      <th scope="col">Dirección</th>
+      <th scope="col">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for cliente in clientes %}
+    <tr>
+      <th scope="row">{{cliente.id}}</th>
+      <td>{{cliente.numero_identificacion}}</td>
+      <td>{{cliente.nombre_completo}}</td>
+      <td>{{cliente.email}}</td>
+      <td>{{cliente.telefono}}</td>
+      <td>{{cliente.direccion}}</td>
+      <td>
+        <a class="btn btn-danger" href="/eliminar_cliente/{{ cliente.id }}">Eliminar</a>
+
+        <a href="{{ url_for('editar_cliente', id=cliente.id) }}" class="btn btn-sm btn-warning">Editar</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock contenido %}

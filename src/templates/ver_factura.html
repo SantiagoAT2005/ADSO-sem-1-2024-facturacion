@@ -1,0 +1,184 @@
+{% extends 'layout.html' %}
+
+{% block contenido %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="fas fa-file-invoice"></i> {{ titulo_pagina }}</h4>
+            <button onclick="window.print()" class="btn btn-light">
+                <i class="fas fa-print"></i> Imprimir
+            </button>
+        </div>
+        <div class="card-body" id="factura-contenido">
+            
+            <!-- Encabezado de la Factura -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h2 class="text-primary">FACTURA DE VENTA</h2>
+                    <p class="mb-1"><strong>Número:</strong> {{ factura.numero_factura }}</p>
+                    <p class="mb-1"><strong>Fecha:</strong> {{ factura.fecha.strftime('%d/%m/%Y %H:%M') }}</p>
+                    <p class="mb-1"><strong>Estado:</strong> 
+                        {% if factura.estado == 'activa' %}
+                            <span class="badge bg-warning text-dark">Activa</span>
+                        {% elif factura.estado == 'pagada' %}
+                            <span class="badge bg-success">Pagada</span>
+                        {% elif factura.estado == 'anulada' %}
+                            <span class="badge bg-danger">Anulada</span>
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <h5>Su Empresa S.A.S</h5>
+                    <p class="mb-0">NIT: 900.123.456-7</p>
+                    <p class="mb-0">Dirección: Calle 123 #45-67</p>
+                    <p class="mb-0">Teléfono: (601) 123-4567</p>
+                    <p class="mb-0">Email: info@suempresa.com</p>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Información del Cliente -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5 class="text-primary">Datos del Cliente</h5>
+                    <p class="mb-1"><strong>Nombre:</strong> {{ factura.cliente.nombre_completo }}</p>
+                    <p class="mb-1"><strong>Identificación:</strong> {{ factura.cliente.numero_identificacion }}</p>
+                    <p class="mb-1"><strong>Dirección:</strong> {{ factura.cliente.direccion }}</p>
+                    <p class="mb-1"><strong>Teléfono:</strong> {{ factura.cliente.telefono }}</p>
+                    <p class="mb-1"><strong>Email:</strong> {{ factura.cliente.email }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="text-primary">Datos del Vendedor</h5>
+                    <p class="mb-1"><strong>Nombre:</strong> {{ factura.usuario.nombre }}</p>
+                    <p class="mb-1"><strong>Email:</strong> {{ factura.usuario.email }}</p>
+                    <p class="mb-1"><strong>Rol:</strong> {{ factura.usuario.rol }}</p>
+                </div>
+            </div>
+
+            <!-- Detalle de Productos -->
+            <h5 class="text-primary mb-3">Detalle de Productos</h5>
+            {% if detalles %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 45%;">Descripción</th>
+                            <th class="text-center" style="width: 15%;">Cantidad</th>
+                            <th class="text-end" style="width: 15%;">Valor Unit.</th>
+                            <th class="text-end" style="width: 20%;">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detalle in detalles %}
+                        <tr>
+                            <td class="text-center">{{ loop.index }}</td>
+                            <td>{{ detalle.producto.descripcion }}</td>
+                            <td class="text-center">{{ detalle.cantidad }} {{ detalle.producto.unidad_medida }}</td>
+                            <td class="text-end">${{ "%.2f"|format(detalle.valor_unitario) }}</td>
+                            <td class="text-end">${{ "%.2f"|format(detalle.subtotal) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i> Esta factura no tiene productos asociados.
+            </div>
+            {% endif %}
+
+            <!-- Totales -->
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    {% if factura.observaciones %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Observaciones:</h6>
+                            <p class="card-text">{{ factura.observaciones }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td class="text-end"><strong>Subtotal:</strong></td>
+                            <td class="text-end" style="width: 150px;">${{ "%.2f"|format(factura.subtotal) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-end"><strong>IVA (19%):</strong></td>
+                            <td class="text-end">${{ "%.2f"|format(factura.iva) }}</td>
+                        </tr>
+                        <tr class="table-primary">
+                            <td class="text-end"><strong>TOTAL A PAGAR:</strong></td>
+                            <td class="text-end"><strong>${{ "%.2f"|format(factura.total) }}</strong></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Información Legal (Opcional) -->
+            <div class="mt-4 pt-3 border-top">
+                <p class="text-muted small text-center mb-0">
+                    Esta factura es válida como título ejecutivo. Los impuestos de esta factura se encuentran incluidos en el precio.
+                    Resolución DIAN No. 18764000000000 del 01/01/2024. Rango autorizado del FAC-000001 al FAC-999999.
+                </p>
+            </div>
+        </div>
+
+        <!-- Botones de Acción (No se imprimen) -->
+        <div class="card-footer no-print">
+            <div class="d-flex justify-content-between">
+                <a href="{{ url_for('ver_facturas') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver a Facturas
+                </a>
+                <div>
+                    {% if factura.estado == 'activa' %}
+                    <a href="{{ url_for('agregar_detalles_factura', factura_id=factura.id) }}" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Editar Factura
+                    </a>
+                    <a href="{{ url_for('finalizar_factura', id=factura.id) }}" 
+                       class="btn btn-success"
+                       onclick="return confirm('¿Está seguro de finalizar esta factura?')">
+                        <i class="fas fa-check-circle"></i> Finalizar
+                    </a>
+                    <a href="{{ url_for('anular_factura', id=factura.id) }}" 
+                       class="btn btn-warning"
+                       onclick="return confirm('¿Está seguro de anular esta factura?')">
+                        <i class="fas fa-ban"></i> Anular
+                    </a>
+                    {% endif %}
+                    <button onclick="window.print()" class="btn btn-info">
+                        <i class="fas fa-print"></i> Imprimir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    body {
+        background-color: white;
+    }
+    
+    .card {
+        border: none;
+        box-shadow: none;
+    }
+    
+    .card-header {
+        background-color: white !important;
+        color: black !important;
+        border: none;
+    }
+}
+</style>
+{% endblock %}
